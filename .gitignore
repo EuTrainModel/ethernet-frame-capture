@@ -205,3 +205,27 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# PCAP files (can get huge, store only samples if needed)
+*.pcap
+
+# Capture output folder (optional if you only keep sample pcaps)
+captures/
+
+# VS Code local settings (if you don’t want them in repo)
+.vscode/
+
+.venv/
+
+captures/*
+!captures/.gitkeep
