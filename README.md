@@ -4,7 +4,7 @@ A tiny Wireshark‑style **CLI packet sniffer** written in Python with [Scapy]. 
 
 > Works on **Linux / macOS / Windows**. Live sniffing typically requires **root/Administrator** privileges.
 
----
+
 
 ## Features
 
@@ -15,7 +15,7 @@ A tiny Wireshark‑style **CLI packet sniffer** written in Python with [Scapy]. 
 * Clean **colored output** (disable with `--no-color`).
 * End‑of‑run **summary with per‑protocol counts and percentages**.
 
----
+
 
 ## Project structure
 
@@ -26,13 +26,13 @@ ethernet-frame-cap/
 ├── README.md
 ├── requirements.txt
 ├── ethernet_cap.py     # main program
-├── run.sh              # convenience launcher (Linux/macOS)
-├── setup.sh            # create venv + install dependencies
+├── run.py              # convenience launcher 
+├── bootstrap.py        # create venv + install dependencies
 └── captures/           # kept in git via .gitkeep, .pcap files ignored
     └── .gitkeep
 ```
 
----
+
 
 ## Quick start
 
@@ -47,46 +47,31 @@ ethernet-frame-cap/
 ```bash
 git clone <your-repo-url>
 cd ethernet-frame-cap
-./setup.sh
+python bootstrap.py
 ```
 
 This creates a `.venv/` and installs requirements.
-
-> If you prefer manual setup:
->
-> ```bash
-> python3 -m venv .venv
-> source .venv/bin/activate
-> pip install -r requirements.txt
-> ```
 
 ### 2) Run
 
 ```bash
 # Default interface, no filter (Ctrl+C to stop)
-sudo ./run.sh
+python run.py
 
 # Stop after 20 packets
-sudo ./run.sh -c 20
+python run.py -c 20
 
 # Stop after 10 seconds
-sudo ./run.sh --timeout 10
+python run.py --timeout 10
 
 # DNS only (UDP/TCP 53), save to PCAP
-sudo ./run.sh -f "port 53" -c 50 -w captures/dns_$(date +%s).pcap
+python run.py -f "port 53" -c 50 -w captures/dns_$(date +%s).pcap
 ```
 
-> **Note:** `run.sh` auto‑elevates with `sudo` for live sniffing. You’ll be prompted for your password the first time. Subsequent runs in the same terminal may *not* prompt because `sudo` caches credentials for a short period. Use `sudo -k` (or `sudo -K`) to force a re‑prompt.
+> **Note:** You’ll be prompted for your password the first time. Subsequent runs in the same terminal may *not* prompt because credentials are caches for a short period.\
 
-> On Windows, run your terminal **as Administrator** and execute:
->
-> ````powershell
-> .\.venv\Scripts\python.exe ethernet_cap.py -c 20
-> ```powershell
-> .\.venv\Scripts\python.exe ethernet_cap.py -c 20
-> ````
 
----
+
 
 ## Usage
 
@@ -126,7 +111,7 @@ optional arguments:
 -f "net 192.168.1.0/24"
 ```
 
----
+
 
 ## Choosing an interface
 
@@ -160,7 +145,7 @@ sudo ./run.sh -i en0 --timeout 10
 sudo ./run.sh -i wlan0 -c 100
 ```
 
----
+
 
 ## Output example
 
@@ -179,14 +164,14 @@ sudo ./run.sh -i wlan0 -c 100
   udp=55 (29.4%)
 ```
 
----
+
 
 ## Saving & inspecting PCAPs
 
 * Use `-w FILE.pcap` to **append** packets to a PCAP:
 
   ```bash
-  sudo ./run.sh -f "port 53" -c 50 -w captures/dns_test.pcap
+  python run.py -f "port 53" -c 50 -w captures/dns_test.pcap
   ```
 * Quick peek with `tcpdump`:
 
@@ -197,35 +182,21 @@ sudo ./run.sh -i wlan0 -c 100
 
 > The repo ignores `captures/*` by default but keeps the folder via `.gitkeep`.
 
----
+
 
 ## Troubleshooting
 
 **Permission denied / no packets**
 
 * Live sniffing needs root/Administrator.
-* On macOS, prefer `python3` from your venv and run via `sudo ./run.sh`.
+* On Linux/macOS, `run.py` auto-relaunches itself with `sudo`.
 
-**Why didn’t it ask for my password this time?**
-
-* `run.sh` re‑execs itself with `sudo` for live capture. `sudo` caches your authentication for a short time per terminal, so subsequent runs may not prompt again. Use `sudo -v` to refresh, `sudo -k`/`sudo -K` to expire the cache.
 
 **Interface not found**
 
 * Use the correct platform name (`en0` on macOS, often `wlan0`/`eth0` on Linux).
 * List interfaces with `get_if_list()` or (macOS) `networksetup -listallhardwareports`.
 
-**Run without sudo (optional)**
-
-* **macOS:** Install Wireshark’s *ChmodBPF* package (adds a launch daemon and group‑writable `/dev/bpf*`), then ensure your user is in the appropriate group. Log out/in.
-* **Linux:** Add your user to the `wireshark` group and set capabilities on `dumpcap`:
-
-  ```bash
-  sudo usermod -aG wireshark $USER
-  sudo setcap cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap
-  ```
-
-  (Depending on libpcap backend, Scapy may then capture without sudo.)
 
 **BPF filter error**
 
@@ -236,7 +207,7 @@ sudo ./run.sh -i wlan0 -c 100
 * Wrong interface or too strict filter; try without `-f`.
 * Some Wi‑Fi drivers/interfaces don’t support certain modes without extra setup.
 
----
+
 
 ## Development notes
 
@@ -244,31 +215,20 @@ sudo ./run.sh -i wlan0 -c 100
 * PCAP writing is done via `PcapWriter(..., append=True, sync=True)` to avoid overwrites and reduce data loss on interrupt.
 * End‑of‑run summary is collected with `collections.Counter` and printed as counts and percentages.
 
-### Local testing tips
 
-```bash
-# Format: show only a few packets
-sudo ./run.sh -c 10
 
-# Verbose network activity generator (in another terminal)
-ping -c 5 1.1.1.1
-nslookup openai.com
-curl http://example.com
-```
-
----
 
 ## Security & ethics
 
 Use this tool **only on networks you own or have explicit permission to monitor**. Respect laws, privacy, and institutional policies.
 
----
+
 
 ## License
 
 This project is licensed under the **MIT License**. See `LICENSE` for details.
 
----
+
 
 ## Credits
 
