@@ -41,6 +41,7 @@ ethernet-frame-cap/
 * **Python 3.8+**
 * **Scapy** and **Colorama** (installed via `requirements.txt`)
 * Live sniff: run as **root/Administrator**
+* PCAP setup
 
 ### 1) Clone & set up
 
@@ -51,6 +52,24 @@ python bootstrap.py
 ```
 
 This creates a `.venv/` and installs requirements.
+## 🛠️ PCAP Setup for each OS
+
+### Windows
+- Install [Npcap](https://npcap.com) in **WinPcap API-compatible mode**  
+  (or run: `winget install Nmap.Npcap`).
+- Open PowerShell/VS Code as **Administrator**.
+- Run with your interface name (e.g., `"Ethernet"`, `"Wi-Fi"`).
+
+### macOS
+- `libpcap` is built in. No need to install 
+
+
+### Linux
+- Ensure `libpcap` is installed:
+  ```bash
+  sudo apt install libpcap0.8
+  ```
+
 
 ### 2) Run
 
