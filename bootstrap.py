@@ -7,8 +7,7 @@ VENV = os.path.join(ROOT, ".venv")
 def venv_python():
     if platform.system() == "Windows":
         return os.path.join(VENV, "Scripts", "python.exe")
-        # Note: on Windows the activation hint will differ (we still show the macOS line if you want exact match,
-        # but see the post-setup hints at the bottom where we branch per-OS).
+        # Note: on Windows the activation hint will differ 
     else:
         return os.path.join(VENV, "bin", "python")
 
@@ -21,7 +20,6 @@ def run(cmd, **kw):
     subprocess.check_call(cmd, **kw)
 
 def main():
-    # 📦 line exactly like your screenshot
     print("📦  Setting up project virtual environment...")
 
     # create venv if missing
@@ -50,10 +48,8 @@ def main():
     if not os.path.exists(keep):
         open(keep, "w").close()
 
-    # ✅ + two 👉 lines exactly like your macOS setup.sh
     print("\n✅  Setup complete!")
     if platform.system() == "Windows":
-        # still give Windows-appropriate hints, but keep style consistent
         print("👉  Next time, activate with: .\\.venv\\Scripts\\Activate.ps1   (PowerShell)")
         print("👉  Or just use: python run.py to launch directly")
     else:
