@@ -37,7 +37,7 @@ def setup_colors(disable=False):
     if disable:
         class NoC:
             def __getattr__(self, _): return "" 
-            # Python calls __getattr__(self, name) whenever you try to access an attribute that doesn’t exist. In this case, It'll always return an empty String "", no matter what you ask for
+            # Python calls __getattr__(self, name) whenever you try to access an attribute that doesn’t exist. In this case, It'll always return an empty String ""
         return NoC(), NoC(), ""
     return (
         type("C", (), dict(
@@ -57,7 +57,6 @@ def eth_type_to_name(t):
     return mapping.get(t, f"0x{t:04x}")
 
 def tcp_flags_str(tcp):
-    # Scapy's str(tcp.flags) is okay, but we'll give a compact classic set:
     # F S R P A U E C (FIN SYN RST PSH ACK URG ECE CWR)
     flags = tcp.flags
     order = [("F", 0x01), ("S", 0x02), ("R", 0x04), ("P", 0x08),
@@ -122,7 +121,7 @@ def main():
     if args.write:
         writer = PcapWriter(args.write, append=True, sync=True)
         # append = True to avoid overwriting, just add packet to the end off the file
-        #sync = True to flush to disk immediately, so we dont lose packets if the program is interrupted
+        # sync = True to flush to disk immediately, so we dont lose packets if the program is interrupted
         print(f"{C.ETH}* Writing to PCAP:{R} {args.write} (append mode)")
 
     # Counter
